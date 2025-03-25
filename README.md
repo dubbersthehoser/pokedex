@@ -15,3 +15,7 @@ Run
 List commands
 
 - `Pokedex > help`
+
+# External API
+
+- [PokeAPI](https://pokeapi.co/docs/v2)
