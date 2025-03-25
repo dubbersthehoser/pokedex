@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"github.com/dubbersthehoser/pokedex/internal/cli"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	cli.Run()
 }
