@@ -12,24 +12,32 @@ import (
 
 var pokeDex map[string]api.Pokemon
 
+var histList []string
+
+const prompt string = "Pokedex > "
+
 func Run() {
-	prompt := "Pokedex > "
 	inputScanner := bufio.NewScanner(os.Stdin)
 	config := api.Config{}
 	api.Cache = pokecache.NewCache(time.Minute)
-	pokeDex = make(map[string]api.Pokemon)
+
+	histList = make([]string, 0)
 	for {
 		fmt.Print(prompt)
 		ok := inputScanner.Scan()
+		var line string
 		if !ok {
-			fmt.Println("EXIT")
-			return
+			line = "exit"
+		} else {
+			line = inputScanner.Text()
 		}
 
-		words := cleanInput(inputScanner.Text())
+		words := cleanInput(line)
 		if len(words) == 0 {
 			continue
 		}
+
+		histList = append(histList, line)
 		fword := words[0]
 
 		proc, err := commandLookUp(fword)
@@ -43,3 +51,4 @@ func Run() {
 		}
 	}
 }
+
