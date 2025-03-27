@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"math/rand"
+	"encoding/json"
 
 	"github.com/dubbersthehoser/pokedex/internal/api"
 )
@@ -88,7 +89,7 @@ func commandCatch(config *api.Config, args ...string) error {
 	if len(args) == 0 {
 		fmt.Println("Pokemon was not given")
 	} 
-	pokemon, ok := pokeDex[args[0]]
+	pokemon, ok := playerData.CoughtPokemon[args[0]]
 	if ok {
 		fmt.Printf("%s already cought\n", *pokemon.Name)
 		return nil
@@ -110,7 +111,7 @@ func commandCatch(config *api.Config, args ...string) error {
 	isCought := chance <= threshold
 
 	if isCought {
-		pokeDex[*pokemon.Name] = pokemon
+		playerData.CoughtPokemon[*pokemon.Name] = pokemon
 		fmt.Printf("%s was caught!\n", *pokemon.Name)
 	} else {
 		fmt.Printf("%s escaped!\n", *pokemon.Name)
@@ -122,7 +123,7 @@ func commandInspect(config *api.Config, args ...string) error {
 	if len(args) == 0 {
 		fmt.Println("Pokemon was not given")
 	} 
-	pokemon, ok := pokeDex[args[0]]
+	pokemon, ok := playerData.CoughtPokemon[args[0]]
 	if !ok {
 		fmt.Printf("%s has not been caught\n", *pokemon.Name)
 		return nil
@@ -144,9 +145,33 @@ func commandInspect(config *api.Config, args ...string) error {
 
 func commandPokedex(config *api.Config, args ...string) error {
 	fmt.Println("Your Pokedex:")
-	for _, pokemon := range pokeDex {
+	for _, pokemon := range playerData.CoughtPokemon {
 		fmt.Printf(" - %s\n", *pokemon.Name)
 	}
+	return nil
+}
+
+func commandSave(config *api.Config, args ...string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("No save name given")
+	}
+	filename := fmt.Sprintf("%s.json", args[0])
+	file, err := os.Create(filename)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+	bytes, err := json.Marshal(playerData)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write(bytes)
+
+	if err != nil {
+		return err
+	}
+	fmt.Println("Character saved")
 	return nil
 }
 
@@ -191,6 +216,11 @@ func initCommandMapping() {
 		name: "pokedex",
 		description: "List cought pokemon",
 		callback: commandPokedex,
+	}
+	commandMapping["save"] = cliCommand{
+		name: "save",
+		description: "Save current character",
+		callback: commandSave,
 	}
 }
 
