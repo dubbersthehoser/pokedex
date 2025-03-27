@@ -8,13 +8,11 @@ A boot.dev project
 
 # Usage
 
-Run
+- Run: `./pokedex`
 
-- `./pokedex`
+- Load save: `./pokedex [JSONFILE]` 
 
-List commands
-
-- `Pokedex > help`
+- List commands: `Pokedex > help`
 
 # External API
 
