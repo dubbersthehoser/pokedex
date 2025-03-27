@@ -10,7 +10,7 @@ A boot.dev project
 
 - Run: `./pokedex`
 
-- Load save: `./pokedex [JSONFILE]` 
+- Load save: `./pokedex JSONFILE` 
 
 - List commands: `Pokedex > help`
 
